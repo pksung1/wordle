@@ -1,9 +1,7 @@
 import { GameBoard, Header, Keyboard } from '@/components/containers'
 import { ThemeProvider, css } from '@emotion/react'
-import { RecoilRoot } from 'recoil'
-
-import { useEffect, useLayoutEffect } from 'react'
 import { useKeyHandler } from './store/hooks'
+import { useEffect } from 'react'
 
 const theme = {
   color: {
@@ -15,7 +13,7 @@ const theme = {
 function App() {
   const { handleKeyPress } = useKeyHandler()
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     document.body.setAttribute('style', `background-color: ${theme.color.bg}`)
   }, [])
 
