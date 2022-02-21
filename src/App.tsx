@@ -18,6 +18,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Header />
       <main css={css`
         width: 100vw;
         height: 100vh;
@@ -26,7 +27,6 @@ function App() {
         background: ${theme.color.bg};
         color: ${theme.color.text};
       `}>
-        <Header />
         <section css={css`
           width: 100%;
           max-width: 30rem;
