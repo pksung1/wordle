@@ -1,8 +1,8 @@
-import { atom } from "recoil";
+import { atom } from 'recoil'
 
 export const wordleState = atom({
   key: 'wordleState',
-  default: ['', '', '', '', '', '']
+  default: ['', '', '', '', '', ''],
 })
 
 export const currentWordleIndexState = atom({

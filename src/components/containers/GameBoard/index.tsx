@@ -9,28 +9,27 @@ type WordRowProps = {
 }
 const _WordRow: React.FC<WordRowProps> = ({ word }) => {
   const theme = useTheme()
+  const wordArray = word.padEnd(5).split('')
+
   return (
     <>
-      {word
-        .padEnd(5)
-        .split('')
-        .map((w, idx) => (
-          <div
-            key={w + idx}
-            css={css`
-              aspect-ratio: 1;
-              box-sizing: border-box;
-              border: 0.1rem solid ${theme.color.text};
-              border-radius: 0.5rem;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: 3rem;
-            `}
-          >
-            {w}
-          </div>
-        ))}
+      {wordArray.map((w, idx) => (
+        <div
+          key={w + idx}
+          css={css`
+            aspect-ratio: 1;
+            box-sizing: border-box;
+            border: 0.1rem solid ${theme.color.text};
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+          `}
+        >
+          {w}
+        </div>
+      ))}
     </>
   )
 }
