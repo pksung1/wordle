@@ -1,6 +1,6 @@
 import { GameBoard, Header, Keyboard } from '@/components/containers'
 import { ThemeProvider, css } from '@emotion/react'
-import { useEffect, useLayoutEffect } from 'react'
+import { useLayoutEffect } from 'react'
 
 
 const theme = {
