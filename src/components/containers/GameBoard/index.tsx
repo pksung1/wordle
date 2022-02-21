@@ -1,9 +1,6 @@
-import { insertWordKeyFrame } from '@/components/keyframe'
 import { WordBox } from '@/components/styled'
 import { wordleState } from '@/store/atoms'
-import { useUpdateWordle } from '@/store/hooks'
-import { css, useTheme } from '@emotion/react'
-import { memo } from 'react'
+import { css } from '@emotion/react'
 import { useRecoilValue } from 'recoil'
 
 type WordRowProps = {
@@ -25,7 +22,6 @@ const WordRow: React.FC<WordRowProps> = ({ word }) => {
 }
 
 const GameBoard = () => {
-  useUpdateWordle()
   const wordles = useRecoilValue(wordleState)
   return (
     <div
