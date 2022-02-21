@@ -52,14 +52,13 @@ const useKeyHandler = () => {
       setGameStatus({ ...gameStatus, disabledKeyEvent: true })
 
       validWordle(currentWordle).then((result) => {
-        // 단어가 아닌경우 이벤트 처리
         if (result === false) {
-          // 키 입력이 가능하게 상태를 바꿉니다.
-          setGameStatus({ ...gameStatus, disabledKeyEvent: false })
-          return
+          // 단어가 아닌경우 이벤트 처리
+        } else {
+          // 단어인경우 결과를 보여주는 동작 후, 다음칸에 입력하도록 합니다.
+          setCurrentWordleIndex(currentWordleIndex + 1)
         }
-        // 단어인경우 결과를 보여주는 동작 후, 다음칸에 입력하도록 합니다.
-        setCurrentWordleIndex(currentWordleIndex + 1)
+        setGameStatus({ ...gameStatus, disabledKeyEvent: false })
       })
     }
 
