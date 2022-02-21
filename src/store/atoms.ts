@@ -9,3 +9,10 @@ export const currentWordleIndexState = atom({
   key: 'currentWordleIndexState',
   default: 0,
 })
+
+export const gameStatusState = atom({
+  key: 'gameStatusState',
+  default: {
+    disabledKeyEvent: false,
+  },
+})
