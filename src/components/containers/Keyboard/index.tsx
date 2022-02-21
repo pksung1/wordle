@@ -1,6 +1,14 @@
+import { css } from "@emotion/react";
+
 const Keyboard = () => {
   return (
-    <div></div>
+    <div css={css`
+      width: 100%;
+      height: 20rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `}>Keyboard</div>
   )
 }
 
