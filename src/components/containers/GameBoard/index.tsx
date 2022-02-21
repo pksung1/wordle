@@ -1,3 +1,5 @@
+import { insertWordKeyFrame } from '@/components/keyframe'
+import { WordBox } from '@/components/styled'
 import { wordleState } from '@/store/atoms'
 import { useUpdateWordle } from '@/store/hooks'
 import { css, useTheme } from '@emotion/react'
@@ -7,40 +9,22 @@ import { useRecoilValue } from 'recoil'
 type WordRowProps = {
   word: string
 }
-const _WordRow: React.FC<WordRowProps> = ({ word }) => {
-  const theme = useTheme()
+const WordRow: React.FC<WordRowProps> = ({ word }) => {
   const wordArray = word.padEnd(5).split('')
+  const wordInsertIndex = word.length - 1
 
   return (
     <>
       {wordArray.map((w, idx) => (
-        <div
-          key={w + idx}
-          css={css`
-            aspect-ratio: 1;
-            box-sizing: border-box;
-            border: 0.1rem solid ${theme.color.text};
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-          `}
-        >
+        <WordBox key={w + idx} inserted={idx <= wordInsertIndex}>
           {w}
-        </div>
+        </WordBox>
       ))}
     </>
   )
 }
 
-// 메모라이징으로 불필요한 렌더링을 줄임
-const WordRow = memo(_WordRow, (prevProp, nextProp) => {
-  return nextProp.word === prevProp.word
-})
-
 const GameBoard = () => {
-  const theme = useTheme()
   useUpdateWordle()
   const wordles = useRecoilValue(wordleState)
   return (
@@ -62,7 +46,7 @@ const GameBoard = () => {
         `}
       >
         {wordles.map((word, idx) => (
-          <WordRow word={word} key={word + idx} />
+          <WordRow word={word} key={idx} />
         ))}
       </div>
     </div>
