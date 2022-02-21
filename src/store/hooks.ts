@@ -1,18 +1,17 @@
-import { useEffect } from 'react'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { currentWordleIndexState, wordleState } from './atoms'
 import { getCurrentWordle } from './select'
 
 /**
- * Wordle 키입력 이벤트를 처리하는 부분
+ * 키 입력 처리 Hooks
+ * document의 keydown 이벤트, Keyboard에서 클릭했을때의 이벤트 처리를 합니다.
  */
-const useUpdateWordle = () => {
+const useKeyHandler = () => {
   const [wordles, setWordles] = useRecoilState(wordleState)
   const [currentWordleIndex, setCurrentWordleIndex] = useRecoilState(
     currentWordleIndexState
   )
   const currentWordle = useRecoilValue(getCurrentWordle)
-
   const handleKeyPress = (e: KeyboardEvent) => {
     const key = e.key.toUpperCase()
     let nextWordle = currentWordle
@@ -29,14 +28,7 @@ const useUpdateWordle = () => {
     setWordles(nextWordles)
   }
 
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyPress)
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress)
-    }
-  }, [currentWordle, currentWordleIndex])
-
   return { handleKeyPress }
 }
 
-export { useUpdateWordle }
+export { useKeyHandler }

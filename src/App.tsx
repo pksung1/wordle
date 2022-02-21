@@ -2,8 +2,8 @@ import { GameBoard, Header, Keyboard } from '@/components/containers'
 import { ThemeProvider, css } from '@emotion/react'
 import { RecoilRoot } from 'recoil'
 
-import { useLayoutEffect } from 'react'
-import { useUpdateWordle } from './store/hooks'
+import { useEffect, useLayoutEffect } from 'react'
+import { useKeyHandler } from './store/hooks'
 
 const theme = {
   color: {
@@ -13,11 +13,19 @@ const theme = {
 }
 
 function App() {
+  const { handleKeyPress } = useKeyHandler()
+
   useLayoutEffect(() => {
     document.body.setAttribute('style', `background-color: ${theme.color.bg}`)
   }, [])
 
-  useUpdateWordle()
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress)
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [handleKeyPress])
+
   return (
     <ThemeProvider theme={theme}>
       <Header />
