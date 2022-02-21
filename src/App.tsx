@@ -1,6 +1,6 @@
 import { GameBoard, Header, Keyboard } from '@/components/containers'
 import { ThemeProvider, css } from '@emotion/react'
-import { useLayoutEffect } from 'react'
+import { useEffect } from 'react'
 
 const theme = {
   color: {
@@ -10,7 +10,7 @@ const theme = {
 }
 
 function App() {
-  useLayoutEffect(() => {
+  useEffect(() => {
     document.body.setAttribute('style', `background-color: ${theme.color.bg}`)
   }, [])
 
