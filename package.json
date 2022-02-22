@@ -27,6 +27,7 @@
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
+    "miragejs": "^0.1.43",
     "prettier": "^2.5.1",
     "typescript": "^4.4.4",
     "vite": "^2.7.2"
