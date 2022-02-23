@@ -1,5 +1,5 @@
 import { GameBoard, Header, Keyboard } from '@/components/containers'
-import { ThemeProvider, css } from '@emotion/react'
+import { ThemeProvider, css, Global } from '@emotion/react'
 import { useKeyHandler } from './store/hooks'
 import { useEffect } from 'react'
 
@@ -26,6 +26,11 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Global
+        styles={css`
+          background-color: ${theme.color.bg};
+        `}
+      />
       <Header />
       <main
         css={css`
