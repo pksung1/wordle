@@ -1,5 +1,6 @@
 import { GameBoard, Header, Keyboard } from '@/components/containers'
-import { ThemeProvider, css } from '@emotion/react'
+import { ThemeProvider, css, Global } from '@emotion/react'
+import { useKeyHandler } from './store/hooks'
 import { useEffect } from 'react'
 
 const theme = {
@@ -10,12 +11,26 @@ const theme = {
 }
 
 function App() {
+  const { handleKeyPress } = useKeyHandler()
+
   useEffect(() => {
     document.body.setAttribute('style', `background-color: ${theme.color.bg}`)
   }, [])
 
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress)
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [handleKeyPress])
+
   return (
     <ThemeProvider theme={theme}>
+      <Global
+        styles={css`
+          background-color: ${theme.color.bg};
+        `}
+      />
       <Header />
       <main
         css={css`
