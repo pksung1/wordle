@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil'
 type WordRowProps = {
   word: string
 }
-const WordRow: React.FC<WordRowProps> = ({ word }) => {
+const WordRow = ({ word }: WordRowProps) => {
   const wordArray = word.padEnd(5).split('')
   const wordInsertIndex = word.length - 1
 
