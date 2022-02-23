@@ -4,6 +4,7 @@ import './index.css'
 import 'normalize.css'
 import App from './App'
 import { RecoilRoot } from 'recoil'
+import { DebugObserver } from './utils'
 
 if (process.env.NODE_ENV === 'development') {
   import('./mirageAPI')
@@ -12,6 +13,7 @@ if (process.env.NODE_ENV === 'development') {
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
+      <DebugObserver />
       <App />
     </RecoilRoot>
   </React.StrictMode>,
