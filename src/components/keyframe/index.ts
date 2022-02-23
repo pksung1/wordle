@@ -18,4 +18,15 @@ const insertWordKeyFrame = keyframes`
   }
 `
 
-export { insertWordKeyFrame }
+const shakeWord = keyframes`
+  from, 20%, 40%, 60%, 80%, to {
+    transform: translate3d(-0.1rem, 0, 0);
+    
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translate3d(0.1rem, 0, 0);
+    border-color: red;
+  }
+`
+
+export { insertWordKeyFrame, shakeWord }
