@@ -8,10 +8,9 @@ createServer({
   routes() {
     this.get('/api/valid/:word', (schema, request) => {
       const word = request.params.word
-
       const response: ValidWordleResponse = []
 
-      if (selectWord in WORDLES) {
+      if (WORDLES.includes(word.toUpperCase())) {
         for (let idx = 0; idx < selectWord.length; idx++) {
           response.push({
             word: word[idx],

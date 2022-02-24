@@ -1,5 +1,11 @@
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { currentWordleIndexState, gameStatusState, wordleState } from './atoms'
+import { getValidWordle } from '@/api'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import {
+  currentWordleIndexState,
+  gameStatusState,
+  validState,
+  wordleState,
+} from './atoms'
 import { getCurrentWordle } from './selector'
 
 type WordleValidResult = Array<{ word: string; correct: boolean }> | false
@@ -30,9 +36,10 @@ const useKeyHandler = () => {
   const [currentWordleIndex, setCurrentWordleIndex] = useRecoilState(
     currentWordleIndexState
   )
+  const setValidState = useSetRecoilState(validState)
   const currentWordle = useRecoilValue(getCurrentWordle)
   const handleKeyPress = (e: KeyboardEvent) => {
-    if (gameStatus.disabledKeyEvent) {
+    if (gameStatus !== 'READY') {
       return
     }
     const key = e.key.toUpperCase()
@@ -49,16 +56,19 @@ const useKeyHandler = () => {
     // 엔터를 클릭하면 단어검증 로직을 수행합니다.
     else if (key === 'ENTER' && currentWordleIndex < 5) {
       // 키 이벤트를 중단합니다.
-      setGameStatus({ ...gameStatus, disabledKeyEvent: true })
+      setGameStatus('CHECKING')
 
-      validWordle(currentWordle).then((result) => {
-        if (result === false) {
+      getValidWordle(currentWordle).then(async (response) => {
+        const json = await response.json()
+        console.log(json)
+        if (json === false) {
           // 단어가 아닌경우 이벤트 처리
+          setGameStatus('NOT_WORDLE')
         } else {
           // 단어인경우 결과를 보여주는 동작 후, 다음칸에 입력하도록 합니다.
-          setCurrentWordleIndex(currentWordleIndex + 1)
+          setValidState(json)
+          setGameStatus('CHECK_ANIMATION')
         }
-        setGameStatus({ ...gameStatus, disabledKeyEvent: false })
       })
     }
 

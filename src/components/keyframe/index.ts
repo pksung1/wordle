@@ -1,4 +1,4 @@
-import { keyframes } from '@emotion/react'
+import { keyframes, SerializedStyles } from '@emotion/react'
 
 const insertWordKeyFrame = keyframes`
   from, 20%, 53%, 80%, to {
@@ -29,4 +29,18 @@ const shakeWord = keyframes`
   }
 `
 
-export { insertWordKeyFrame, shakeWord }
+const checkFrame = (css: SerializedStyles) => keyframes`
+  from {
+    transform: rotateY(0);
+  }
+  50% {
+    background: initial;
+    transform: rotateY(90deg);
+  }
+  to {
+    ${css}
+    transform: rotateY(0deg);
+  }
+`
+
+export { insertWordKeyFrame, shakeWord, checkFrame }

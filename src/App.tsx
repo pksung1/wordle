@@ -7,6 +7,8 @@ const theme = {
   color: {
     bg: '#000000',
     text: '#FFFFFF',
+    correct: 'green',
+    notCorrect: 'red',
   },
 }
 
