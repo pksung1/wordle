@@ -1,29 +1,50 @@
 import { getValidWordle } from '@/api'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { insertWordKeyFrame, shakeWord } from '@/components/keyframe'
+import { GAME_OPTIONS } from '@/constant'
+import { css, SerializedStyles, useTheme } from '@emotion/react'
+import { useCallback, useRef } from 'react'
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil'
 import {
-  currentWordleIndexState,
   gameStatusState,
-  validState,
+  rowIndexState,
   wordleState,
+  getCurrentWordleText,
+  ValidType,
 } from './atoms'
-import { getCurrentWordle } from './selector'
-
-type WordleValidResult = Array<{ word: string; correct: boolean }> | false
+import { convertYetWordleState } from './utils'
 
 /**
- * wordle이 맞는지 확인하는 함수입니다. Network 동작이 있을 예정입니다.
- * @param wordle 검사할 wordle 입니다.
- * @returns Promise<Object> valid 결과를 보여줍니다.
- * 단어가 아닐경우 false
- * 단어일경우 Array<{word: string, correct: boolean}> 를 리턴합니다.
+ * Atoms를 쉽게 다룰수 있는 helper 함수들입니다.
  */
-function validWordle(wordle: string): Promise<WordleValidResult> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(wordle)
-      resolve(false)
-    }, 3000)
-  })
+const useAtomHelper = () => {
+  const [wordles, setWordles] = useRecoilState(wordleState)
+  const rowIndex = useRecoilValue(rowIndexState)
+
+  const resetWordle = useResetRecoilState(wordleState)
+  const resetGameStatus = useResetRecoilState(gameStatusState)
+  const resetRowIndex = useResetRecoilState(rowIndexState)
+
+  /**
+   * atom rowIndex에 값을 업데이트하는 함수입니다.
+   * @param wordle ValidType 을 가진 워들을 받습니다.
+   */
+  const updateCurrentWordle = (wordle: ValidType) => {
+    const nextWordles = [
+      ...wordles.slice(0, rowIndex),
+      wordle,
+      ...wordles.slice(rowIndex + 1, wordles.length),
+    ]
+
+    setWordles(nextWordles)
+  }
+
+  const retryGame = () => {
+    resetWordle()
+    resetGameStatus()
+    resetRowIndex()
+  }
+
+  return { updateCurrentWordle, retryGame }
 }
 
 /**
@@ -31,53 +52,60 @@ function validWordle(wordle: string): Promise<WordleValidResult> {
  * document의 keydown 이벤트, Keyboard에서 클릭했을때의 이벤트 처리를 합니다.
  */
 const useKeyHandler = () => {
-  const [wordles, setWordles] = useRecoilState(wordleState)
   const [gameStatus, setGameStatus] = useRecoilState(gameStatusState)
-  const [currentWordleIndex, setCurrentWordleIndex] = useRecoilState(
-    currentWordleIndexState
-  )
-  const setValidState = useSetRecoilState(validState)
-  const currentWordle = useRecoilValue(getCurrentWordle)
+  const [rowIndex, setRowIndex] = useRecoilState(rowIndexState)
+  const currentWordleText = useRecoilValue(getCurrentWordleText)
+  const { updateCurrentWordle } = useAtomHelper()
+
   const handleKeyPress = (e: KeyboardEvent) => {
+    // 준비상태가 아니라면 키입력 이벤트를 무시합니다.
     if (gameStatus !== 'READY') {
       return
     }
     const key = e.key.toUpperCase()
-    let nextWordle = currentWordle
+    let nextWordleText = currentWordleText
 
     // A - Z 키 입력시 해당 단어를 추가합니다.
     if (key.length === 1 && 'A' <= key && key <= 'Z') {
-      nextWordle = (currentWordle + key).slice(0, 5)
+      nextWordleText = (currentWordleText + key).slice(0, 5)
+      updateCurrentWordle(convertYetWordleState(nextWordleText))
     }
     // BACKSPACE 클릭시 단어를 하나 지웁니다.
     else if (key === 'BACKSPACE') {
-      nextWordle = currentWordle.slice(0, currentWordle.length - 1)
+      nextWordleText = currentWordleText.slice(0, currentWordleText.length - 1)
+      updateCurrentWordle(convertYetWordleState(nextWordleText))
     }
     // 엔터를 클릭하면 단어검증 로직을 수행합니다.
-    else if (key === 'ENTER' && currentWordleIndex < 5) {
-      // 키 이벤트를 중단합니다.
+    else if (key === 'ENTER' && rowIndex < GAME_OPTIONS.rowCount) {
       setGameStatus('CHECKING')
+      getValidWordle(currentWordleText).then(async (response) => {
+        const json = (await response.json()) as ValidType | false
 
-      getValidWordle(currentWordle).then(async (response) => {
-        const json = await response.json()
-        console.log(json)
-        if (json === false) {
-          // 단어가 아닌경우 이벤트 처리
-          setGameStatus('NOT_WORDLE')
+        // 단어가 아닌경우 이벤트 처리
+        if (json !== false) {
+          setGameStatus('VALID_ANIMATION')
+          updateCurrentWordle(json)
+          setTimeout(() => {
+            if (json?.every(({ correct }) => correct === 'CORRECT')) {
+              setGameStatus('SUCCESS')
+            } else if (rowIndex + 1 === GAME_OPTIONS.rowCount) {
+              setGameStatus('FAIL')
+            } else {
+              setGameStatus('READY')
+              setRowIndex(rowIndex + 1)
+            }
+          }, 500 * 5)
         } else {
-          // 단어인경우 결과를 보여주는 동작 후, 다음칸에 입력하도록 합니다.
-          setValidState(json)
-          setGameStatus('CHECK_ANIMATION')
+          setGameStatus('NOT_WORDLE')
+          setTimeout(() => {
+            setGameStatus('READY')
+          }, 300)
         }
       })
     }
-
-    const nextWordles = [...wordles]
-    nextWordles[currentWordleIndex] = nextWordle
-    setWordles(nextWordles)
   }
 
   return { handleKeyPress }
 }
 
-export { useKeyHandler }
+export { useKeyHandler, useAtomHelper }
