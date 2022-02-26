@@ -2,6 +2,8 @@
 
 [테오](https://velog.io/@teo)가 진행하는 WORDLE 첼린지에 도전합니다.
 
+같이 참여할 분은 [테오의 프론트엔드 디스코드](https://discord.gg/2pwX6y9dwj)의 wordle-challenge 채널에서 함께할수 있습니다.
+
 ## [Wordle](https://www.nytimes.com/games/wordle/index.html)?
 
 옛날 숫자 야구게임룰을 영단어 맞추기에 접목시킨 게임입니다.
