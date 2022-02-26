@@ -4,35 +4,38 @@ import { ValidType } from './store/atoms'
 
 const selectWord = WORDLES[Math.trunc(Math.random() * WORDLES.length)]
 
+export const getResponse = (word: string): ValidType | false => {
+  if (word === selectWord) {
+    return word.split('').map((w) => ({ word: w, correct: 'CORRECT' }))
+  }
+
+  const compareSelectWords: string[] = selectWord.split('')
+
+  // 문자가 존재하는지 확인
+  if (WORDLES.includes(word)) {
+    const response: ValidType = word.split('').map((w, idx) => {
+      const findIndex = compareSelectWords.indexOf(w)
+      if (idx === findIndex) {
+        delete compareSelectWords[findIndex]
+        return { word: w, correct: 'CORRECT' }
+      } else if (findIndex >= 0) {
+        delete compareSelectWords[findIndex]
+        return { word: w, correct: 'ONLY_WORD_CORRECT' }
+      }
+      return { word: w, correct: 'NO' }
+    })
+    return response
+  } else {
+    return false
+  }
+}
+
 createServer({
   routes() {
     this.get('/api/valid/:word', (schema, request) => {
       const word = request.params.word.toUpperCase()
 
-      // 정답인경우
-      if (word === selectWord) {
-        return word.split('').map((w) => ({ word: w, correct: 'CORRECT' }))
-      }
-
-      const compareSelectWords: string[] = selectWord.split('')
-
-      // 문자가 존재하는지 확인
-      if (WORDLES.includes(word)) {
-        const response: ValidType = word.split('').map((w, idx) => {
-          const findIndex = compareSelectWords.indexOf(w)
-          if (idx === findIndex) {
-            delete compareSelectWords[findIndex]
-            return { word: w, correct: 'CORRECT' }
-          } else if (findIndex >= 0) {
-            delete compareSelectWords[findIndex]
-            return { word: w, correct: 'ONLY_WORD_CORRECT' }
-          }
-          return { word: w, correct: 'NO' }
-        })
-        return response
-      } else {
-        return false
-      }
+      return getResponse(word)
     })
   },
 })

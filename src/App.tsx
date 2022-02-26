@@ -2,7 +2,7 @@ import { GameBoard, Header, Keyboard } from '@/containers'
 import { ThemeProvider, css, Global } from '@emotion/react'
 import { useKeyHandler } from './store/hooks'
 import { useEffect } from 'react'
-import { Modal, SuccessModal, FailModal } from './containers'
+import { SuccessModal, FailModal } from './containers'
 import { useRecoilValue } from 'recoil'
 import { gameStatusState } from './store/atoms'
 
@@ -40,6 +40,7 @@ function App() {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            z-index: 9999;
           }
         `}
       />
