@@ -6,7 +6,7 @@ import {
   Theme,
   useTheme,
 } from '@emotion/react'
-import { memo, useEffect, useMemo, useRef } from 'react'
+import { memo, useMemo } from 'react'
 import { checkFrame, insertWordKeyFrame } from '../keyframe'
 import { WordBox } from '../styled'
 
@@ -17,6 +17,11 @@ type WordProps = {
   parentCss?: SerializedStyles | null
 }
 
+/**
+ * keyframe Animation을 가져옵니다.
+ * @param theme ThemeProvider의 theme 값입니다.
+ * @returns CorrectType에 해당하는 keyframe을 반환합니다
+ */
 const getFrame = (theme: Theme): { [key in CorrectType]: Keyframes } => ({
   CORRECT: checkFrame(
     css`
@@ -36,6 +41,14 @@ const getFrame = (theme: Theme): { [key in CorrectType]: Keyframes } => ({
   NOT_YET: insertWordKeyFrame,
 })
 
+/**
+ * 한 단어 컴포넌트입니다.
+ * 애니메이션을 관리합니다.
+ * @param word 한 단어입니다.
+ * @param index 단어 위치입니다
+ * @param correct 정답여부입니다 CORRECT | ONLY_WORD_CORRECT | NO | NOT_YET
+ * @param parentCss 부모의 css입니다. WordBox 에서 컴포지션합니다.
+ */
 const Word = ({ word, index, correct, parentCss }: WordProps) => {
   const theme = useTheme()
   const animation: SerializedStyles | null = useMemo(() => {

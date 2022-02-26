@@ -3,7 +3,8 @@ import WORDLES from './assets/wordle.json'
 import { ValidType } from './store/atoms'
 
 const selectWord = WORDLES[Math.trunc(Math.random() * WORDLES.length)]
-
+// TODO: 실제 프로덕션에서는 삭제할것
+console.log(`정답: ${selectWord}`)
 export const getResponse = (word: string): ValidType | false => {
   if (word === selectWord) {
     return word.split('').map((w) => ({ word: w, correct: 'CORRECT' }))

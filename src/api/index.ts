@@ -17,7 +17,6 @@ function getValidWordle(word: string) {
     const mockResponse: Pick<Response, 'json'> = {
       json: () => Promise.resolve(getResponse(word)),
     }
-    console.log(mockResponse.json())
     return Promise.resolve(mockResponse)
   }
   return fetch(`/api/valid/${word}`, {

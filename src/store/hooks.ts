@@ -57,12 +57,12 @@ const useKeyHandler = () => {
   const currentWordleText = useRecoilValue(getCurrentWordleText)
   const { updateCurrentWordle } = useAtomHelper()
 
-  const handleKeyPress = (e: KeyboardEvent) => {
+  const handleKeyPress = (_key: string) => {
     // 준비상태가 아니라면 키입력 이벤트를 무시합니다.
     if (gameStatus !== 'READY') {
       return
     }
-    const key = e.key.toUpperCase()
+    const key = _key.toUpperCase()
     let nextWordleText = currentWordleText
 
     // A - Z 키 입력시 해당 단어를 추가합니다.
@@ -77,26 +77,35 @@ const useKeyHandler = () => {
     }
     // 엔터를 클릭하면 단어검증 로직을 수행합니다.
     else if (key === 'ENTER' && rowIndex < GAME_OPTIONS.rowCount) {
+      // 단어 검사중 - CHECKING
       setGameStatus('CHECKING')
       getValidWordle(currentWordleText).then(async (response) => {
         const json = (await response.json()) as ValidType | false
 
-        // 단어가 아닌경우 이벤트 처리
         if (json !== false) {
+          // 단어인경우 VALID_ANIMATION 으로 게임상태를 애니메이션으로 전환
           setGameStatus('VALID_ANIMATION')
           updateCurrentWordle(json)
+
+          // 카드 flip 애니메이션을 박스당 .5초 이므로 500 * 5 이후에 다음 게임상태로 넘어가도록 합니다.
           setTimeout(() => {
             if (json?.every(({ correct }) => correct === 'CORRECT')) {
+              // 정답인경우 처리
               setGameStatus('SUCCESS')
             } else if (rowIndex + 1 === GAME_OPTIONS.rowCount) {
+              // 기회가 없음, 실패한경우 처리
               setGameStatus('FAIL')
             } else {
+              // 기회가 있음, 다음 row로 이동
               setGameStatus('READY')
               setRowIndex(rowIndex + 1)
             }
           }, 500 * 5)
         } else {
+          // 단어 자체가 존재하지 않은경우 처리
           setGameStatus('NOT_WORDLE')
+
+          // 0.3초 애니메이션 처리 후 READY 상태
           setTimeout(() => {
             setGameStatus('READY')
           }, 300)

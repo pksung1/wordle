@@ -1,6 +1,9 @@
 import { atom, selector, selectorFamily } from 'recoil'
 import { convertWordleCharList, convertWordleText } from './utils'
 
+/**
+ * 현재의 wordle의 rowIndex입니다.
+ */
 export const rowIndexState = atom({
   key: 'rowIndexState',
   default: 0,
@@ -19,6 +22,9 @@ export type ValidType = Array<{
   correct: CorrectType
 }> | null
 
+/**
+ * 각 row의 상태를 가지고 있습니다.
+ */
 export const wordleState = atom<Array<ValidType>>({
   key: 'wordleState',
   default: [null, null, null, null, null, null],
@@ -39,6 +45,9 @@ export type IDLE =
   | 'FAIL'
   | 'SUCCESS'
 
+/**
+ * 게임의 상태를 가지고 있습니다.
+ */
 export const gameStatusState = atom<IDLE>({
   key: 'gameStatusState',
   default: 'READY',
@@ -46,6 +55,9 @@ export const gameStatusState = atom<IDLE>({
 
 // SELECTOR
 
+/**
+ * 현재 row의 wordle의 Array<validType> 가져올수 있습니다.
+ */
 export const getCurrentWordle = selector({
   key: 'currentWordle',
   get: ({ get }) => {
@@ -56,6 +68,9 @@ export const getCurrentWordle = selector({
   },
 })
 
+/**
+ * 현재 row의 wordle을 문자열을 가져올수 있습니다.
+ */
 export const getCurrentWordleText = selector({
   key: 'currentWordleText',
   get: ({ get }) => {
@@ -66,6 +81,9 @@ export const getCurrentWordleText = selector({
   },
 })
 
+/**
+ * rowIndex를 받아 해당 rowIndex의 텍스트를 가져올수 있습니다.
+ */
 export const getWordRowText = selectorFamily({
   key: 'getWordRowText',
   get:
@@ -75,6 +93,9 @@ export const getWordRowText = selectorFamily({
     },
 })
 
+/**
+ * rowIndex를 받아 해당 rowIndex의 Array<validType> 을 가져올수 있습니다.
+ */
 export const getWordRowValid = selectorFamily({
   key: 'getWordRowValid',
   get:
@@ -84,6 +105,10 @@ export const getWordRowValid = selectorFamily({
     },
 })
 
+/**
+ * gameStatus에 따른 row의 상태를 가져올수있습니다.
+ * 다른 row의 애니메이션을 막기 위해 추가했습니다.
+ */
 export const getRowStatus = selectorFamily({
   key: 'getRowStatus',
   get:

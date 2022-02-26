@@ -29,6 +29,7 @@ const shakeWord = keyframes`
   }
 `
 
+// 색상 변화를 위한 css prop을 받습니다.
 const checkFrame = (css: SerializedStyles) => keyframes`
   from {
     transform: rotateY(0);

@@ -22,9 +22,10 @@ function App() {
   const gameStatus = useRecoilValue(gameStatusState)
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyPress)
+    const handle = (e: KeyboardEvent) => handleKeyPress(e.key)
+    document.addEventListener('keydown', handle)
     return () => {
-      document.removeEventListener('keydown', handleKeyPress)
+      document.removeEventListener('keydown', handle)
     }
   }, [handleKeyPress])
 
