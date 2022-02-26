@@ -1,22 +1,34 @@
 import { createServer } from 'miragejs'
-import { ValidWordleResponse } from './api/types'
 import WORDLES from './assets/wordle.json'
+import { ValidType } from './store/atoms'
 
 const selectWord = WORDLES[Math.trunc(Math.random() * WORDLES.length)]
 
 createServer({
   routes() {
     this.get('/api/valid/:word', (schema, request) => {
-      const word = request.params.word
-      const response: ValidWordleResponse = []
+      const word = request.params.word.toUpperCase()
 
-      if (WORDLES.includes(word.toUpperCase())) {
-        for (let idx = 0; idx < selectWord.length; idx++) {
-          response.push({
-            word: word[idx],
-            correct: selectWord[idx] === word[idx],
-          })
-        }
+      // 정답인경우
+      if (word === selectWord) {
+        return word.split('').map((w) => ({ word: w, correct: 'CORRECT' }))
+      }
+
+      const compareSelectWords: string[] = selectWord.split('')
+
+      // 문자가 존재하는지 확인
+      if (WORDLES.includes(word)) {
+        const response: ValidType = word.split('').map((w, idx) => {
+          const findIndex = compareSelectWords.indexOf(w)
+          if (idx === findIndex) {
+            delete compareSelectWords[findIndex]
+            return { word: w, correct: 'CORRECT' }
+          } else if (findIndex >= 0) {
+            delete compareSelectWords[findIndex]
+            return { word: w, correct: 'ONLY_WORD_CORRECT' }
+          }
+          return { word: w, correct: 'NO' }
+        })
         return response
       } else {
         return false
