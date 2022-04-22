@@ -1,26 +1,31 @@
-import { GameBoard, Header, Keyboard } from '@/components/containers'
+import { GameBoard, Header, Keyboard } from '@/containers'
 import { ThemeProvider, css, Global } from '@emotion/react'
 import { useKeyHandler } from './store/hooks'
 import { useEffect } from 'react'
+import { SuccessModal, FailModal } from './containers'
+import { useRecoilValue } from 'recoil'
+import { gameStatusState } from './store/atoms'
 
 const theme = {
   color: {
     bg: '#000000',
     text: '#FFFFFF',
+    correct: 'green',
+    notCorrect: 'gray',
+    onlyPosCorrect: 'yellow',
+    modalBg: '#FFFFFF',
   },
 }
 
 function App() {
   const { handleKeyPress } = useKeyHandler()
+  const gameStatus = useRecoilValue(gameStatusState)
 
   useEffect(() => {
-    document.body.setAttribute('style', `background-color: ${theme.color.bg}`)
-  }, [])
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyPress)
+    const handle = (e: KeyboardEvent) => handleKeyPress(e.key)
+    document.addEventListener('keydown', handle)
     return () => {
-      document.removeEventListener('keydown', handleKeyPress)
+      document.removeEventListener('keydown', handle)
     }
   }, [handleKeyPress])
 
@@ -28,7 +33,16 @@ function App() {
     <ThemeProvider theme={theme}>
       <Global
         styles={css`
-          background-color: ${theme.color.bg};
+          body {
+            background-color: ${theme.color.bg};
+          }
+          #modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+          }
         `}
       />
       <Header />
@@ -55,6 +69,8 @@ function App() {
           <GameBoard />
           <Keyboard />
         </section>
+        {gameStatus === 'SUCCESS' && <SuccessModal />}
+        {gameStatus === 'FAIL' && <FailModal />}
       </main>
     </ThemeProvider>
   )

@@ -5,6 +5,10 @@ declare module '@emotion/react' {
     color: {
       bg: string
       text: string
+      correct: string
+      onlyPosCorrect: string
+      notCorrect: string
+      modalBg: string
     }
   }
 }
